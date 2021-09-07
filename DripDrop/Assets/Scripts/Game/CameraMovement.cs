@@ -12,7 +12,7 @@ public class CameraMovement : MonoBehaviour
     private float timer = 0f;
     private Vector3 currentPosition = new Vector3(0, 0, -10f);
 
-    private bool isMoving;
+    public bool isMoving;
     
     void Update()
     {

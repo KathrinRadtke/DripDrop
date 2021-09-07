@@ -19,7 +19,10 @@ public class ParallaxObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        currentPosition.y = Mathf.Lerp(startPosition, endPosition, cameraMovement.GetMovementPercentage());
-        transform.localPosition = currentPosition;
+        if (cameraMovement.isMoving)
+        {
+            currentPosition.y = Mathf.Lerp(startPosition, endPosition, cameraMovement.GetMovementPercentage());
+            transform.localPosition = currentPosition;
+        }
     }
 }

@@ -5,21 +5,23 @@ using UnityEngine;
 public class Level : MonoBehaviour
 {
     [SerializeField] private CameraMovement cameraMovement;
-    [SerializeField] private float endPosition;
-    [SerializeField] private float movementTime;
 
     [SerializeField] private LevelGenerator levelGenerator;
-    [SerializeField] private int collectableCount = 50;
-    
-    void Start()
+
+    [SerializeField] private LevelSettings[] levelSettings;
+
+    private int currentLevel;
+
+    public void StartLevel(int levelIndex)
     {
-        cameraMovement.SetLevelSettings(endPosition, movementTime);
+        currentLevel = levelIndex;
+        cameraMovement.SetLevelSettings(levelSettings[currentLevel].endPosition, levelSettings[currentLevel].movementTime);
         StartCoroutine(WaitForLevelGeneration());
     }
 
     private IEnumerator WaitForLevelGeneration()
     {
-        yield return StartCoroutine(levelGenerator.GenerateLevel(collectableCount, 0, endPosition));
+        yield return StartCoroutine(levelGenerator.GenerateLevel(levelSettings[currentLevel].collectableCount, 0, levelSettings[currentLevel].endPosition));
         cameraMovement.StartLevel();
     }
 
