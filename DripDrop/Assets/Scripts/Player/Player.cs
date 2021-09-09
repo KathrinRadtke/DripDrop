@@ -15,33 +15,61 @@ public class Player : MonoBehaviour
     [SerializeField] private float shrinkMultiplier = 0.1f;
     [SerializeField] private Transform scaledTransform;
 
+    [SerializeField] private SizeUI sizeUI;
+    [SerializeField] private Level level;
+
+    [SerializeField] private CameraMovement cameraMovement;
+
 
     void Start()
     {
         SetScale();        
     }
 
+    public void ResetSize()
+    {
+        scale = minScale;
+        SetScale();
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Collectable collectable = other.GetComponent<Collectable>();
-        if (collectable != null)
+        if (cameraMovement.isMoving)
         {
-            if (collectable.scale <= scale + scaleTolerance)
+            Collectable collectable = other.GetComponent<Collectable>();
+            if (collectable != null)
             {
-                scale += collectable.scale * growMultiplier;
+                if (collectable.scale <= scale + scaleTolerance)
+                {
+                    scale += collectable.scale * growMultiplier;
+                    SoundSystem.Instance().PlaySound("blub", 0.7f, 1.3f);
+                }
+                else
+                {
+                    scale -= collectable.scale * shrinkMultiplier;
+                    SoundSystem.Instance().PlaySound("slurp");
+
+                    if (scale >= minScale)
+                    {
+                        Fade.DoFade(0.05f, 0.05f, 0.05f);
+                    }
+                }
+
                 SetScale();
                 Destroy(collectable.gameObject);
             }
-            else
-            {
-                scale-= collectable.scale * shrinkMultiplier;
-                SetScale();
-            }
+
+            sizeUI.SetSizeText(scale);
         }
     }
 
     private void SetScale()
     {
+        if (scale < minScale)
+        {
+            level.GameOver();
+        }
+
         scale = Mathf.Clamp(scale, minScale, maxScale);
         localScale.x = scale;
         localScale.y = scale;

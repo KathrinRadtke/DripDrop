@@ -9,12 +9,16 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private GameObject collectablePrefab;
 
     private GameObject currentCollectable;
+
+    private List<GameObject> currentDrops = new List<GameObject>();
     
     public IEnumerator GenerateLevel(float count, float minY, float maxY)
     {
+        currentDrops = new List<GameObject>();
         for (int i = 0; i < count; i++)
         {
             currentCollectable = Instantiate(collectablePrefab, Vector3.zero, Quaternion.identity, transform);
+            currentDrops.Add(currentCollectable);
             
             SetSizeAndPosition(minY, maxY);
             yield return null;  
@@ -34,14 +38,26 @@ public class LevelGenerator : MonoBehaviour
                 safetyCounter++;
                 yield return null;
             }
-            
+        }
+
+        foreach (var drop in currentDrops)
+        {
+            drop.GetComponent<Collider2D>().isTrigger = true;
+        }
+    }
+
+    public void ResetLevel()
+    {
+        foreach (var drop in currentDrops)
+        {
+            Destroy(drop.gameObject);
         }
     }
 
     private void SetSizeAndPosition(float minY, float maxY)
     {
         Vector3 collectablePosition = Vector3.zero;
-        collectablePosition.x = Random.Range(-2f, 2f);
+        collectablePosition.x = Random.Range(-2.5f, 2.5f);
         collectablePosition.y = Random.Range(minY, maxY);
         currentCollectable.transform.position = collectablePosition;
         

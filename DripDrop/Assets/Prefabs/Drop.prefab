@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   level: 1
+  scale: 0
 --- !u!70 &8332888144900886395
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

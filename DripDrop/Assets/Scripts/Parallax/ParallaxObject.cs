@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,7 @@ public class ParallaxObject : MonoBehaviour
     void Start()
     {
         cameraMovement = Camera.main.GetComponent<CameraMovement>();
+        cameraMovement.OnReset += OnReset;
     }
 
     // Update is called once per frame
@@ -24,5 +26,16 @@ public class ParallaxObject : MonoBehaviour
             currentPosition.y = Mathf.Lerp(startPosition, endPosition, cameraMovement.GetMovementPercentage());
             transform.localPosition = currentPosition;
         }
+    }
+
+    private void OnReset()
+    {
+        currentPosition.y = Mathf.Lerp(startPosition, endPosition, cameraMovement.GetMovementPercentage());
+        transform.localPosition = currentPosition;
+    }
+
+    private void OnDestroy()
+    {
+        cameraMovement.OnReset -= OnReset;
     }
 }

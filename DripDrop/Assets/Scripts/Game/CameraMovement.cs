@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraMovement : MonoBehaviour
 {
     [SerializeField] private float startPosition;
-    
+
     private float endPosition;
     private float movementTime;
 
@@ -13,6 +13,12 @@ public class CameraMovement : MonoBehaviour
     private Vector3 currentPosition = new Vector3(0, 0, -10f);
 
     public bool isMoving;
+    
+    public delegate void LevelComplete();
+    public LevelComplete OnLevelComplete;
+    
+    public delegate void Reset();
+    public Reset OnReset;
     
     void Update()
     {
@@ -26,6 +32,7 @@ public class CameraMovement : MonoBehaviour
             }
             else
             {
+                OnLevelComplete?.Invoke();
                 isMoving = false;
             }
         }
@@ -34,6 +41,20 @@ public class CameraMovement : MonoBehaviour
     public void StartLevel()
     {
         isMoving = true;
+    }
+
+    public void Stop()
+    {
+        isMoving = false;
+    }
+
+    public void ResetPositions()
+    {
+        timer = 0;
+        currentPosition.y = startPosition;
+        transform.position = currentPosition;
+        
+        OnReset?.Invoke();
     }
 
     public float GetMovementPercentage()
